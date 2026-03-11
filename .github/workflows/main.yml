@@ -19,23 +19,14 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Auto-find and Build KDU
-      shell: pwsh
-      run: |
-        $slnFile = Get-ChildItem -Path . -Filter *.sln -Recurse | Select-Object -First 1
-        if ($slnFile) {
-            Write-Host "Отлично! Нашел файл проекта: $($slnFile.FullName)"
-            msbuild $slnFile.FullName /m /p:Configuration=Release /p:Platform=x64 /p:SpectreMitigation=false /p:PlatformToolset=v143
-        } else {
-            Write-Error "Файл .sln не найден вообще нигде!"
-            exit 1
-        }
+    - name: Build KDU
+      # Убрали PowerShell. Теперь обращаемся к файлу напрямую, как делает сам автор
+      run: msbuild Source\kdu.sln /m /p:Configuration=Release /p:Platform=x64 /p:SpectreMitigation=false /p:PlatformToolset=v143
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: KDU-Compiled
-        # Теперь забираем и экзешники, и библиотеки!
         path: |
           **\Release\*.exe
           **\Release\*.dll
