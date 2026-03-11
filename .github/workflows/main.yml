@@ -20,7 +20,6 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build KDU
-      # Убрали PowerShell. Теперь обращаемся к файлу напрямую, как делает сам автор
       run: msbuild Source\kdu.sln /m /p:Configuration=Release /p:Platform=x64 /p:SpectreMitigation=false /p:PlatformToolset=v143
 
     - name: Upload Artifacts
