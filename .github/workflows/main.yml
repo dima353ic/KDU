@@ -1,0 +1,24 @@
+name: Build KDU
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build KDU
+      run: msbuild KDU.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: KDU-Compiled
+        path: '**\*.exe' 
