@@ -21,12 +21,12 @@ jobs:
 
     - name: Auto-find and Build KDU
       shell: pwsh
-      # Этот скрипт сам найдет .sln файл в любой подпапке и запустит сборку
+      # Добавили /p:PlatformToolset=v143, чтобы проект "согласился" на сборку в стабильной версии VS2022
       run: |
         $slnFile = Get-ChildItem -Path . -Filter *.sln -Recurse | Select-Object -First 1
         if ($slnFile) {
             Write-Host "Отлично! Нашел файл проекта: $($slnFile.FullName)"
-            msbuild $slnFile.FullName /m /p:Configuration=Release /p:Platform=x64 /p:SpectreMitigation=false
+            msbuild $slnFile.FullName /m /p:Configuration=Release /p:Platform=x64 /p:SpectreMitigation=false /p:PlatformToolset=v143
         } else {
             Write-Error "Файл .sln не найден вообще нигде!"
             exit 1
