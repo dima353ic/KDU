@@ -3,6 +3,10 @@ name: Build KDU
 on:
   workflow_dispatch:
 
+env:
+  # Принудительно используем новую версию Node.js, чтобы убрать предупреждение
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: windows-latest
@@ -10,15 +14,20 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        # КРИТИЧЕСКИ ВАЖНО: скачивает все связанные библиотеки автора (ntos, minirtl и т.д.)
+        submodules: recursive 
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
     - name: Build KDU
-      run: msbuild KDU.sln /p:Configuration=Release /p:Platform=x64
+      # Собираем в многопоточном режиме (/m) и автоматически ищем .sln файл
+      run: msbuild /m /p:Configuration=Release /p:Platform=x64
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: KDU-Compiled
-        path: '**\*.exe'
+        # Ищем готовый .exe файл конкретно в папках релизной сборки
+        path: '**\Release\*.exe'
