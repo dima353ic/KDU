@@ -21,7 +21,6 @@ jobs:
 
     - name: Auto-find and Build KDU
       shell: pwsh
-      # Добавили /p:PlatformToolset=v143, чтобы проект "согласился" на сборку в стабильной версии VS2022
       run: |
         $slnFile = Get-ChildItem -Path . -Filter *.sln -Recurse | Select-Object -First 1
         if ($slnFile) {
@@ -36,4 +35,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: KDU-Compiled
-        path: '**\Release\*.exe'
+        # Теперь забираем и экзешники, и библиотеки!
+        path: |
+          **\Release\*.exe
+          **\Release\*.dll
